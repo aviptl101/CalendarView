@@ -123,6 +123,7 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
             updateMonthLabel(indexPath: indexPath)
         } else {
             if day == indexPath.item - firstDayIndexOffset {
+                cell.backgroundColor = .clear
                 cell.dateLabel.textColor = .red
             } else {
                 cell.backgroundColor = .clear
