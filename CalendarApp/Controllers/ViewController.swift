@@ -107,7 +107,7 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
             cell.dateLabel.text = "\(indexPath.row - firstDayIndexOffset)"
         }
 
-        if indexPath == selectedCollectionIndexPath || (indexPath.item % 7) == (selectedCollectionIndexPath.item % 7) {
+        if indexPath == selectedCollectionIndexPath || indexPath.item == (selectedCollectionIndexPath.item + 7) || indexPath.item == (selectedCollectionIndexPath.item - 7) {
             selectedCollectionIndexPath = indexPath
             if day == indexPath.item - firstDayIndexOffset {
                 cell.backgroundColor = .red
