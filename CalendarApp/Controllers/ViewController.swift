@@ -15,9 +15,6 @@ fileprivate enum Constants {
     static let hourTableCell = "HourTableCell"
     static let cellHeight: CGFloat = 60
     static let hours12 = 12
-    static let april = "April"
-    static let march = "March"
-    static let may = "May"
 }
 
 class ViewController: UIViewController {
@@ -31,6 +28,7 @@ class ViewController: UIViewController {
     
     private let day = Utils.getDay()
     private let currentMonth = Utils.getMonth()
+    private let currentYear = Utils.getYear()
     private let firstDayIndexOffset = Utils.getFirstDayIndexOffset()
     
     private var currentMonthDays = 0
@@ -40,13 +38,17 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        titleLabel.text = Constants.april
+        titleLabel.text = Utils.getMonthString(month: currentMonth)
         setCollectionView()
         tableView.allowsSelection = false
         
-        currentMonthDays = Utils.getNumberOfDaysIn(month: currentMonth)
-        previousMonthDays = Utils.getNumberOfDaysIn(month: currentMonth - 1)
-        nextMonthDays = Utils.getNumberOfDaysIn(month: currentMonth + 1)
+        currentMonthDays = Utils.getNumberOfDaysIn(month: currentMonth, year: currentYear)
+        nextMonthDays = Utils.getNumberOfDaysIn(month: currentMonth + 1, year: currentYear)
+        if currentMonth == 1 {
+            previousMonthDays = Utils.getNumberOfDaysIn(month: 12, year: currentYear - 1)
+        } else {
+            previousMonthDays = Utils.getNumberOfDaysIn(month: currentMonth - 1, year: currentYear)
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -166,7 +168,7 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
     
     private func updateMonthLabel(indexPath: IndexPath) {
         if indexPath.item <= firstDayIndexOffset {
-            titleLabel.text = Utils.getMonthString(month: currentMonth - 1)
+            titleLabel.text = currentMonth != 1 ? Utils.getMonthString(month: currentMonth - 1) : Utils.getMonthString(month: 12)
         } else if indexPath.item > firstDayIndexOffset && indexPath.item <= (currentMonthDays + firstDayIndexOffset) {
             titleLabel.text = Utils.getMonthString(month: currentMonth)
         } else {

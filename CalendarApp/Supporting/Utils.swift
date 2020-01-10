@@ -60,8 +60,8 @@ final class Utils {
         return day
     }
     
-    static func getNumberOfDaysIn(month: Int) -> Int {
-        let dateComponents = DateComponents(year: getYear(), month: month)
+    static func getNumberOfDaysIn(month: Int, year: Int) -> Int {
+        let dateComponents = DateComponents(year: year, month: month)
         let calendar = Calendar.current
         let date = calendar.date(from: dateComponents)!
        
@@ -90,6 +90,7 @@ final class Utils {
         while firstDayWeekDay > 7 {
             firstDayWeekDay -= 7
         }
-        return firstDayWeekDay - 2
+        let monthFirstWeekDay = 7 - (firstDayWeekDay - 1)
+        return monthFirstWeekDay - 2
     }
 }
