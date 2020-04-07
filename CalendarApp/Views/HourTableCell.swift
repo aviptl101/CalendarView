@@ -12,7 +12,6 @@ fileprivate enum Constants {
     static let hours12 = 12
 }
 
-
 class HourTableCell: UITableViewCell {
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var topSeparator: UILabel!
@@ -33,7 +32,7 @@ class HourTableCell: UITableViewCell {
             timeLabel.isHidden = false
         }
 
-        let height = contentView.frame.size.height - 5
+        let height = contentView.frame.size.height - 4
         let minHeightUnit = height / 60
         let markerHeight = CGFloat(minutes) * minHeightUnit
         currentTimeTopSpace.constant = markerHeight
@@ -55,9 +54,11 @@ class HourTableCell: UITableViewCell {
             hours = Constants.hours12
         } else if hours > Constants.hours12 {
             hours -= Constants.hours12
-            currentTimeLabel.text = "\(hours):\(minutes) PM"
+            
+            currentTimeLabel.text = minutes < 10 ? "\(hours):0\(minutes) PM" : "\(hours):\(minutes) PM"
+            
         } else {
-            currentTimeLabel.text = "\(hours):\(minutes) AM"
+            currentTimeLabel.text = minutes < 10 ? "\(hours):0\(minutes) AM" : "\(hours):\(minutes) AM"
         }
     }
     

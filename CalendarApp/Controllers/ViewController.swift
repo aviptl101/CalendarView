@@ -28,6 +28,14 @@ class ViewController: UIViewController {
     private var itemWidth: CGFloat = 0
     private var selectedTableIndexPath = IndexPath(item: 100, section: 0)
     private var selectedCollectionIndexPath = IndexPath(item: 100, section: 0)
+    
+    private let day = Utils.getDay()
+    private let currentMonth = Utils.getMonth()
+    private let firstDayIndexOffset = Utils.getFirstDayIndexOffset()
+    
+    private var currentMonthDays = 0
+    private var previousMonthDays = 0
+    private var nextMonthDays = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,9 +43,19 @@ class ViewController: UIViewController {
         titleLabel.text = Constants.april
         setCollectionView()
         tableView.allowsSelection = false
+        
+        currentMonthDays = Utils.getNumberOfDaysIn(month: currentMonth)
+        previousMonthDays = Utils.getNumberOfDaysIn(month: currentMonth - 1)
+        nextMonthDays = Utils.getNumberOfDaysIn(month: currentMonth + 1)
     }
     
-    func setCollectionView() {
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(false)
+        
+        scrollToCurrentDay()
+    }
+
+    private func setCollectionView() {
         flowLayout.invalidateLayout()
         
         flowLayout.minimumLineSpacing = Constants.lineSpacing
@@ -46,18 +64,26 @@ class ViewController: UIViewController {
         let edgeInsets = UIEdgeInsets(top: 0, left: Constants.lineSpacing / 2, bottom: 0, right: Constants.lineSpacing / 2)
         flowLayout.sectionInset = edgeInsets
         
-        let indexPath = IndexPath(item: 3, section: 0)
-        collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .right)
+        selectedCollectionIndexPath = IndexPath(item: day + firstDayIndexOffset, section: 0)
     }
     
-    func markCurrentTime() {
+    private func scrollToCurrentDay() {
+        let currentDayIndex = day + firstDayIndexOffset
+        let weekday = Utils.getWeekDay()
+        let currentWeekMidDayIndex = currentDayIndex + (4 - weekday)
+        let indexPath = IndexPath(item: currentWeekMidDayIndex, section: 0)
+        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        markCurrentTime()
+    }
+    
+    private func markCurrentTime() {
         let hours = Utils.getHours()
         selectedTableIndexPath = IndexPath(row: hours, section: 0)
         tableView.reloadData()
         tableView.scrollToRow(at: selectedTableIndexPath, at: .middle, animated: true)
     }
     
-    func reloadData() {
+    private func reloadData() {
         markCurrentTime()
     }
 }
@@ -71,26 +97,30 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.dateCell, for: indexPath) as! DateCellView
         
-        if indexPath.item >= 0 && indexPath.item <= 2 {
-            cell.dateLabel.text = "\(29 + indexPath.item)"
-        } else if indexPath.item > 32 {
-            cell.dateLabel.text = "\(indexPath.row - 32)"
+        if indexPath.item >= 0 && indexPath.item <= firstDayIndexOffset {
+            cell.dateLabel.text = "\((previousMonthDays - firstDayIndexOffset) + indexPath.item)"
+        } else if indexPath.item > (currentMonthDays + firstDayIndexOffset) {
+            cell.dateLabel.text = "\(indexPath.row - (currentMonthDays + firstDayIndexOffset))"
         } else {
-            cell.dateLabel.text = "\(indexPath.row - 2)"
+            cell.dateLabel.text = "\(indexPath.row - firstDayIndexOffset)"
         }
-        
-        let day = Utils.getDay()
 
-        if indexPath == selectedCollectionIndexPath {
-            if day == indexPath.item - 2 {
+        if indexPath == selectedCollectionIndexPath || (indexPath.item % 7) == (selectedCollectionIndexPath.item % 7) {
+            selectedCollectionIndexPath = indexPath
+            if day == indexPath.item - firstDayIndexOffset {
                 cell.backgroundColor = .red
                 cell.dateLabel.textColor = .white
+                // show marker
+                displayCurrentTimeMarker()
             } else {
                 cell.backgroundColor = .white
                 cell.dateLabel.textColor = .black
+                // hide marker
+                hideCurrentTimeMarker()
             }
+            updateMonthLabel(indexPath: indexPath)
         } else {
-            if day == indexPath.item - 2 {
+            if day == indexPath.item - firstDayIndexOffset {
                 cell.dateLabel.textColor = .red
             } else {
                 cell.backgroundColor = .clear
@@ -107,37 +137,62 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
         return CGSize(width: itemWidth, height: itemWidth)
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? DateCellView else { return }
-        let day = Utils.getDay()
         
-        if day == indexPath.item - 2 {
+        deSelectCurrentCell()
+        selectedCollectionIndexPath = indexPath
+        
+        if day == indexPath.item - firstDayIndexOffset {
             cell.backgroundColor = .red
             cell.dateLabel.textColor = .white
             // If its today, display marker
-            selectedTableIndexPath = indexPath
-            reloadData()
+            displayCurrentTimeMarker()
         } else {
             cell.backgroundColor = .white
             cell.dateLabel.textColor = .black
-            selectedTableIndexPath = IndexPath(item: 100, section: 0)
-            tableView.reloadData()
+            hideCurrentTimeMarker()
         }
         
-        if indexPath.item <= 2 {
-            titleLabel.text = Constants.march
-        } else if indexPath.item > 2 && indexPath.item <= 32 {
-            titleLabel.text = Constants.april
-        } else {
-            titleLabel.text = Constants.may
-        }
-        selectedCollectionIndexPath = indexPath
+        updateMonthLabel(indexPath: indexPath)
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? DateCellView else { return }
         cell.backgroundColor = .clear
         cell.dateLabel.textColor = .white
+    }
+    
+    private func updateMonthLabel(indexPath: IndexPath) {
+        if indexPath.item <= firstDayIndexOffset {
+            titleLabel.text = Utils.getMonthString(month: currentMonth - 1)
+        } else if indexPath.item > firstDayIndexOffset && indexPath.item <= (currentMonthDays + firstDayIndexOffset) {
+            titleLabel.text = Utils.getMonthString(month: currentMonth)
+        } else {
+            titleLabel.text = Utils.getMonthString(month: currentMonth + 1)
+        }
+    }
+    
+    private func deSelectCurrentCell() {
+        guard let cell = collectionView.cellForItem(at: selectedCollectionIndexPath) as? DateCellView else { return }
+        
+        if day == selectedCollectionIndexPath.item - firstDayIndexOffset {
+            cell.backgroundColor = .clear
+            cell.dateLabel.textColor = .red
+        } else {
+            cell.backgroundColor = .clear
+            cell.dateLabel.textColor = .white
+        }
+    }
+    
+    private func displayCurrentTimeMarker() {
+        reloadData()
+    }
+    
+    private func hideCurrentTimeMarker() {
+        selectedTableIndexPath = IndexPath(item: 100, section: 0)
+        tableView.reloadData()
     }
 }
 
