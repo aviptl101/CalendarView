@@ -267,6 +267,12 @@
                                             <constraint firstAttribute="bottom" secondItem="ldp-pd-Pg7" secondAttribute="bottom" id="y54-P3-axg"/>
                                         </constraints>
                                     </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="April" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sir-Yc-jZM">
+                                        <rect key="frame" x="182.5" y="42" width="49" height="27"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
+                                        <color key="textColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" red="0.086433217005076113" green="0.086433217005076113" blue="0.086433217005076113" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
@@ -274,6 +280,8 @@
                                     <constraint firstItem="ynO-2q-5AF" firstAttribute="leading" secondItem="YYw-sj-tRr" secondAttribute="leading" id="6rI-eE-9W6"/>
                                     <constraint firstAttribute="height" constant="150" id="OOT-FZ-3Hk"/>
                                     <constraint firstAttribute="trailing" secondItem="ynO-2q-5AF" secondAttribute="trailing" id="ZBd-Oz-sbS"/>
+                                    <constraint firstItem="Sir-Yc-jZM" firstAttribute="centerX" secondItem="YYw-sj-tRr" secondAttribute="centerX" id="fwc-cD-MSh"/>
+                                    <constraint firstItem="Sir-Yc-jZM" firstAttribute="top" secondItem="YYw-sj-tRr" secondAttribute="topMargin" constant="-10" id="uDs-c9-YKv"/>
                                     <constraint firstAttribute="trailing" secondItem="rjj-Ex-KdJ" secondAttribute="trailing" constant="20" id="vlf-PX-wdz"/>
                                     <constraint firstAttribute="bottom" secondItem="rjj-Ex-KdJ" secondAttribute="bottom" id="xmZ-Mx-w7Q"/>
                                     <constraint firstItem="rjj-Ex-KdJ" firstAttribute="top" secondItem="ynO-2q-5AF" secondAttribute="bottom" id="xwD-iW-wya"/>
@@ -294,9 +302,9 @@
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="rjj-Ex-KdJ" id="EEZ-4O-Z07"/>
-                        <outlet property="dayLabel" destination="MUx-v0-hCi" id="AJc-gR-e0t"/>
                         <outlet property="flowLayout" destination="QW2-Cb-HSm" id="i3H-w3-YLj"/>
                         <outlet property="tableView" destination="tdq-kQ-vbV" id="WTg-Jf-p4j"/>
+                        <outlet property="titleLabel" destination="Sir-Yc-jZM" id="3wm-QF-h9I"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

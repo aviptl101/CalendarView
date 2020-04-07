@@ -15,19 +15,24 @@ fileprivate enum Constants {
     static let hourTableCell = "HourTableCell"
     static let cellHeight: CGFloat = 60
     static let hours12 = 12
+    static let april = "April"
+    static let march = "March"
+    static let may = "May"
 }
 
 class ViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet var flowLayout: UICollectionViewFlowLayout!
-    @IBOutlet weak var dayLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
     private var itemWidth: CGFloat = 0
     private var selectedTableIndexPath = IndexPath(item: 100, section: 0)
     private var selectedCollectionIndexPath = IndexPath(item: 100, section: 0)
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        titleLabel.text = Constants.april
         setCollectionView()
         tableView.allowsSelection = false
     }
@@ -121,6 +126,14 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
             cell.dateLabel.textColor = .black
             selectedTableIndexPath = IndexPath(item: 100, section: 0)
             tableView.reloadData()
+        }
+        
+        if indexPath.item <= 2 {
+            titleLabel.text = Constants.march
+        } else if indexPath.item > 2 && indexPath.item <= 32 {
+            titleLabel.text = Constants.april
+        } else {
+            titleLabel.text = Constants.may
         }
         selectedCollectionIndexPath = indexPath
     }
