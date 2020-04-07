@@ -37,10 +37,6 @@ class ViewController: UIViewController {
         tableView.allowsSelection = false
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(false)
-    }
-    
     func setCollectionView() {
         flowLayout.invalidateLayout()
         
