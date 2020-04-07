@@ -143,13 +143,13 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
 
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 25
+        return Constants.hours12 * 2 + 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.hourTableCell, for: indexPath) as! HourTableCell
         
-        if indexPath.row == 0 || indexPath.row == 24 {
+        if indexPath.row == 0 || indexPath.row == Constants.hours12 * 2 {
             cell.timeLabel.text = "12 AM"
         } else if indexPath.row == Constants.hours12 {
             cell.timeLabel.text = "12 PM"
